@@ -8,10 +8,10 @@ import org.springframework.web.client.RestOperations
 import javax.inject.Inject
 
 @Service
-open class UsersClient(
+class UsersClient (
         @Inject private val discoveryClient: EurekaClient,
         @Inject private val restTemplate : RestOperations
-) {
+) : Users {
 
     private val LOG = LoggerFactory.getLogger(this.javaClass)
 
@@ -20,13 +20,10 @@ open class UsersClient(
                     .getNextServerFromEureka("jalgo-auth", false)
                     .homePageUrl
 
-
-    fun findAllUsers() = handleExceptions(returnOnException = emptyList()) {
+    override fun findAllUsers() = handleExceptions(returnOnException = emptyList()) {
         restTemplate.getForObject(
                 "${authServiceUrl()}/users", Array<User>::class.java)!!.asList()
     }
-
-
 
     private fun <T> handleExceptions(returnOnException: T, body: () -> T) = try {
         body()

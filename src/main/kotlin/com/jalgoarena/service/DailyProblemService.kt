@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class DailyProblemService (
         @Inject private val problemsRepository: ProblemsRepository,
-        @Inject private val usersClient: UsersClient,
+        @Inject private val usersClient: Users,
         @Inject private val mailingClient: MailingClient
 ){
 
@@ -27,7 +27,7 @@ class DailyProblemService (
     private fun sendEmails(problem: Problem) {
         val users = usersClient.findAllUsers()
         users.forEach {
-            user -> mailingClient.sendEmail(
+            user -> mailingClient.sendDailyProblemEmail(
                 user.email, SUBJECT,
                 prepareMessage(user, problem))
         }
@@ -37,5 +37,5 @@ class DailyProblemService (
         return String.format(MESSAGE_TEMPLATE, user.username, problem.title)
     }
 
-    private fun getProblemId(listSize: Int): Int = Random().nextInt(listSize) + listSize
+    private fun getProblemId(listSize: Int): Int = Random().nextInt(listSize)
 }

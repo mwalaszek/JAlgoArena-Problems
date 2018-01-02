@@ -18,5 +18,5 @@ open class MailingClient (
                     .homePageUrl
 
 
-    fun sendEmail(receiver: String, subject: String, message: String): Int = 0
+    fun sendDailyProblemEmail(receiver: String, subject: String, message: String): Int = 0
 }
