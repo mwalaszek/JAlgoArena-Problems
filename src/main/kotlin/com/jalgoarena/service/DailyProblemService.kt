@@ -12,13 +12,13 @@ import javax.inject.Inject
 class DailyProblemService (
         @Inject private val problemsRepository: ProblemsRepository,
         @Inject private val usersClient: Users,
-        @Inject private val mailingClient: MailingClient
+        @Inject private val mailingClient: Mailing
 ){
 
     private val SUBJECT: String = "Daily problem from JAlgoArena"
     private val MESSAGE_TEMPLATE: String = "Hi %s, today's daily problem is %s."
 
-    @Scheduled(fixedRate=5000)
+    @Scheduled(cron = "0 0 10 * * *")
     fun sendDailyProblem() {
         val problems = problemsRepository.findAll()
         if (problems.isNotEmpty()){

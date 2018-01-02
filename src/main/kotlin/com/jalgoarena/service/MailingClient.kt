@@ -8,18 +8,17 @@ import javax.inject.Inject
 
 
 @Service
-open class MailingClient (
+class MailingClient (
         @Inject private val discoveryClient: EurekaClient,
         @Inject private val restTemplate: RestOperations
-) {
+) : Mailing {
 
     private fun mailingServiceUrl(): String =
             discoveryClient
                     .getNextServerFromEureka("jalgo-mailing", false)
                     .homePageUrl
 
-
-    fun sendEmail(receiver: String, subject: String, message: String): Int {
+    override fun sendEmail(receiver: String, subject: String, message: String): Int {
         val emailDto = EmailDto(receiver, subject, message)
         return restTemplate.postForObject(mailingServiceUrl() + "/sendEmail", emailDto, Int::class.java)
     }

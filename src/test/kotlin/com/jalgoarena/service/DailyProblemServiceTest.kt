@@ -3,34 +3,33 @@ package com.jalgoarena.service
 import com.jalgoarena.data.ProblemsRepository
 import com.jalgoarena.domain.Problem
 import com.jalgoarena.domain.User
-import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.BDDMockito.*
+import org.mockito.InjectMocks
 import org.mockito.Matchers
-import org.mockito.Mockito.mock
+import org.mockito.Mock
+import org.mockito.runners.MockitoJUnitRunner
 import java.util.*
 
-
+@RunWith(MockitoJUnitRunner::class)
 class DailyProblemServiceTest {
 
+    @Mock
     private lateinit var problemsRepository: ProblemsRepository
-    private lateinit var mailingClient: MailingClient
+    @Mock
+    private lateinit var mailingClient: Mailing
+    @Mock
     private lateinit var usersClient: Users
 
-    @Before
-    fun setUp(){
-        problemsRepository = mock(ProblemsRepository::class.java)
-        usersClient = mock(Users::class.java)
-        mailingClient = mock(MailingClient::class.java)
-    }
+    @InjectMocks
+    private lateinit var dailyProblemService: DailyProblemService
 
     @Test
     fun shouldNotSendEmailIfRepositoryEmpty(){
         given(problemsRepository.findAll()).willReturn(Collections.emptyList())
-        val dailyProblemsService = DailyProblemService(problemsRepository,
-                usersClient, mailingClient)
 
-        dailyProblemsService.sendDailyProblem()
+        dailyProblemService.sendDailyProblem()
 
         verify(problemsRepository).findAll()
         verifyZeroInteractions(mailingClient)
@@ -51,14 +50,12 @@ class DailyProblemServiceTest {
                 User("usename2", "email2@jalgo.com"),
                 User("usename3", "email3@jalgo.com")
         ))
-        val dailyProblemsService = DailyProblemService(problemsRepository,
-                usersClient, mailingClient)
 
-        dailyProblemsService.sendDailyProblem()
+        dailyProblemService.sendDailyProblem()
 
         verify(problemsRepository).findAll()
         verify(mailingClient, times(3))
-                .sendEmail(Matchers.matches("[a-z0-9]+@jalgo.com"), Matchers.matches("Daily problem from JAlgoArena"),
-                        Matchers.matches("Hi username[0-9], today's daily problem is problem [0-9]."))
+                .sendEmail(Matchers.anyString(), Matchers.matches("Daily problem from JAlgoArena"),
+                        Matchers.anyString())
     }
 }
