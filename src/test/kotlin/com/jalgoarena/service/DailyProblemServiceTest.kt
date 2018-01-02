@@ -58,7 +58,7 @@ class DailyProblemServiceTest {
 
         verify(problemsRepository).findAll()
         verify(mailingClient, times(3))
-                .sendDailyProblemEmail(Matchers.matches("[a-z0-9]+@jalgo.com"), Matchers.matches("Daily problem from JAlgoArena"),
+                .sendEmail(Matchers.matches("[a-z0-9]+@jalgo.com"), Matchers.matches("Daily problem from JAlgoArena"),
                         Matchers.matches("Hi username[0-9], today's daily problem is problem [0-9]."))
     }
 }
